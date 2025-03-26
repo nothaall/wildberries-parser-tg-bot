@@ -35,7 +35,10 @@ async def get_product_rating(message, command):
     for query in key_queries:
         position = get_product_position_by_query(product["id"], query)
 
-        await message.answer(f"Позиция товара по запросу \"{query}\" - {position}")
+        if position == None:
+            await message.answer(f"По запросу \"{query}\" данный товар не найден")
+        else:
+            await message.answer(f"Позиция товара по запросу \"{query}\" - {position}")
 
 async def main():
     bot = Bot(token = TOKEN)
