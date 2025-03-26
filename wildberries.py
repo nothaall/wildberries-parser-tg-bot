@@ -4,14 +4,34 @@ from urllib.parse import urlparse, urlencode
 def get_product_id_by_url(url):
     return int(urlparse(url).path.split("/")[2])
 
+basket_steps = [143, 287, 431, 719, 1007, 1061, 1115, 1169, 1313, 1601, 1655, 1919, 2045]
+
+def get_basket_number_by_vol(vol):
+    basket_number = 1
+
+    for step in basket_steps:
+        if vol >= step + 1:
+            basket_number = basket_number + 1
+        else:
+            break
+    
+    return basket_number
+
 def get_product_by_id(id):
-    vol = str(id)[0:4]
-    part = str(id)[0:6]
-    card_url = f"https://basket-15.wbbasket.ru/vol{vol}/part{part}/{id}/info/ru/card.json"
+    vol = int(str(id)[0:4])
+    part = int(str(id)[0:6])
+    basket_number = get_basket_number_by_vol(vol)
+    formatted_basket_number = str(basket_number)
+
+    if basket_number < 10:
+        formatted_basket_number = f"0{formatted_basket_number}"
+
+    card_url = f"https://basket-{formatted_basket_number}.wbbasket.ru/vol{vol}/part{part}/{id}/info/ru/card.json"
 
     response = requests.get(card_url).json()
 
     return {
+        "id": id,
         "name": response["imt_name"],
         "description": response["description"]
     }
