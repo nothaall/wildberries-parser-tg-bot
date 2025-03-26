@@ -18,8 +18,8 @@ def get_basket_number_by_vol(vol):
     return basket_number
 
 def get_product_by_id(id):
-    vol = int(str(id)[0:4])
-    part = int(str(id)[0:6])
+    vol = int(id / 100000)
+    part = int(id / 1000)
     basket_number = get_basket_number_by_vol(vol)
     formatted_basket_number = str(basket_number)
 
@@ -27,6 +27,8 @@ def get_product_by_id(id):
         formatted_basket_number = f"0{formatted_basket_number}"
 
     card_url = f"https://basket-{formatted_basket_number}.wbbasket.ru/vol{vol}/part{part}/{id}/info/ru/card.json"
+
+    print(card_url)
 
     response = requests.get(card_url).json()
 
